@@ -17,40 +17,38 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing import image
 from datetime import datetime
 from sklearn.model_selection import train_test_split
-########################
 from keras.models import Sequential
-from keras.layers import Flatten,Activation,Dense,Dropout,Conv2D,MaxPool2D
+from keras.layers import Flatten, Activation,Dense, Dropout,Conv2D, MaxPool2D
 from tensorflow.keras.optimizers import Adam
 import os
 import pathlib 
 import random
-
-# %% [code] {"jupyter":{"outputs_hidden":false},"execution":{"iopub.status.busy":"2023-09-25T01:20:38.622238Z","iopub.execute_input":"2023-09-25T01:20:38.622963Z","iopub.status.idle":"2023-09-25T01:20:38.640416Z","shell.execute_reply.started":"2023-09-25T01:20:38.622928Z","shell.execute_reply":"2023-09-25T01:20:38.638677Z"}}
 import random
 import numpy as np
+
 def evaluate_model(x):
-    """Evaluate the performance of a CNN model with the given hyperparameters.
-    Returns the accuracy of the model."""
-    # Implement the code to train and evaluate the model
+""" Evaluate the performance of a CNN model with the given hyperparameters.
+returns the accuracy of the model."""
+    # This code is for training and evaluating the CNN model
     ks,s,lr =x[0],x[1],x[2]
     model =Sequential()
-#convolution and maxpoollayer
-    model.add(Conv2D(filters=int(lr),kernel_size=(ks,ks),
-                 strides=(s,s),padding='valid',input_shape=(200,200,3)))
+#convolution and max pool layer
+    model.add(Conv2D(filters=int(lr),kernel_size=(ks,ks), strides=(s,s),padding='valid',input_shape=(200,200,3)))
     model.add(Activation('relu'))
     model.add(MaxPool2D(pool_size=2))
-#flatten layer
+#Adding a flattening layer
     model.add(Flatten())
-#hidden layer
+#Adding hidden layer
     model.add(Dense(16))
     model.add(Activation('relu'))
-#output layer
+#Adding output layer
     model.add(Dense(2))
     model.add(Activation('sigmoid'))
     #opt = Adam(learning_rate=lr)
     model.compile(optimizer='sgd',loss='binary_crossentropy',metrics=['accuracy'])
     history=model.fit (train_data,epochs=3, validation_data=val_data)
     ##############################
+# Plot history accuracy
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
     plt.title('model accuracy')
