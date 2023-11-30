@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""PSO module
+"""PSOCNN Algorithm
 
 Copyright (c) 2023 Future Processing sp. z.o.o.
 
@@ -8,7 +8,6 @@ Copyright (c) 2023 Future Processing sp. z.o.o.
 @email: 
 @date: 
 """
-# %% [code] {"jupyter":{"outputs_hidden":false},"execution":{"iopub.status.busy":"2023-11-02T20:06:56.550846Z","iopub.execute_input":"2023-11-02T20:06:56.551222Z","iopub.status.idle":"2023-11-02T20:06:56.559400Z","shell.execute_reply.started":"2023-11-02T20:06:56.551195Z","shell.execute_reply":"2023-11-02T20:06:56.558029Z"}}
 import tensorflow as tf
 import pandas as pd
 import matplotlib.pyplot as plt
