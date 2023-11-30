@@ -2,7 +2,7 @@
 
 """PSOCNN Algorithm
 
-Copyright (c) 2023 Future Processing sp. z.o.o.
+Copyright (c) 2023 Future Processing.
 
 @author:
 @email: 
