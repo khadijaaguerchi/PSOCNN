@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 
 """PSOCNN Algorithm
-
-Copyright (c) 2023 Future Processing.
+Copyright (c) 2023 Future Processing
 
 @author:
 @email: 
