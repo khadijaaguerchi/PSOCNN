@@ -23,50 +23,6 @@ import random
 import random
 import numpy as np
 
-def evaluate_model(x):
-""" Evaluate the performance of a CNN model with the given hyperparameters.
-returns the accuracy of the model."""
-    # This code is for training and evaluating the CNN model
-    ks,s,lr =x[0],x[1],x[2]
-    model =Sequential()
-#convolution and max pool layer
-    model.add(Conv2D(filters=int(lr),kernel_size=(ks,ks), strides=(s,s),padding='valid',input_shape=(200,200,3)))
-    model.add(Activation('relu'))
-    model.add(MaxPool2D(pool_size=2))
-#Adding a flattening layer
-    model.add(Flatten())
-#Adding hidden layer
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-#Adding output layer
-    model.add(Dense(2))
-    model.add(Activation('sigmoid'))
-    #opt = Adam(learning_rate=lr)
-    model.compile(optimizer='sgd',loss='binary_crossentropy',metrics=['accuracy'])
-    history=model.fit (train_data,epochs=3, validation_data=val_data)
-    ##############################
-# Plot history accuracy
-    plt.plot(history.history['accuracy'])
-    plt.plot(history.history['val_accuracy'])
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-# summarize history for loss
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-    score=model.evaluate(test_data)
- # loss, val
-    print('current config:',x,'val test accuracy:',score[1])
-    return score[1]
-
-# %% [code] {"execution":{"iopub.status.busy":"2023-09-12T22:28:12.452569Z","iopub.execute_input":"2023-09-12T22:28:12.452893Z","iopub.status.idle":"2023-09-12T22:28:12.463639Z","shell.execute_reply.started":"2023-09-12T22:28:12.452868Z","shell.execute_reply":"2023-09-12T22:28:12.462478Z"},"jupyter":{"outputs_hidden":false}}
 from tensorflow.keras import layers 
 def evaluate_model2(x):
     """Evaluate the performance of a CNN model with the given hyperparameters.
@@ -93,9 +49,9 @@ def evaluate_model2(x):
     
     #opt = Adam(learning_rate=lr)
     model.compile(optimizer='sgd',loss='binary_crossentropy',metrics=['accuracy'])
-    history=model.fit (train_data,epochs=10, validation_data=val_datan,callbacks=[early_stop])
+    history=model.fit (train_data,epochs=3, validation_data=val_datan,callbacks=[early_stop])
     
-    ##############################
+    ############################## Plot Accuracy and Loss ############################
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
     plt.title('model accuracy')
