@@ -4,6 +4,7 @@ Copyright (c) 2023 Future Processing
 @author:Aguerchi Khadija, Jabrane Younes, Habba Maryam,
 @email: 
 @date: 
+@article:
 """
 
 import tensorflow as tf
@@ -32,7 +33,6 @@ def evaluate_model2(x, train_data, val_data, test_data):
         layers.Dense(16, activation="relu"),
         layers.Dense(2, activation="sigmoid")
     ])
-    
     # Early stopping to avoid overfitting
     early_stop = EarlyStopping(monitor='val_loss', patience=5)
     
@@ -116,3 +116,30 @@ def run_particle_swarm_optimization(num_particles, num_dimensions, hyperparamete
             particle_velocities[i] = updated_velocity
 
     return global_best_position, global_best_accuracy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Import necessary libraries
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import pandas as pd
+
+# Create an ImageDataGenerator for preprocessing and data augmentation
+img_data_gen = ImageDataGenerator(rescale=1/255)
+
+# Load the dataset using flow_from_directory
+dataset_path = '../input/breastcancermasses/Dataset of Mammography with Benign Malignant Breast Masses/Dataset of Mammography with Benign Malignant Breast Masses/MIAS Dataset'
+tumor_dataset = img_data_gen.flow_from_directory(dataset_path)
+
+# Get class indices mapping
+class_indices = tumor_dataset.class_indices
+print("Class Indices:", class_indices)
+
+# Analyze class distribution in the dataset
+classes = pd.DataFrame(tumor_dataset.classes, columns=['Class'])
+class_distribution = classes['Class'].value_counts()
+print("Class Distribution:\n", class_distribution)
+
+# Specify paths for training and testing datasets
+path_train = '../input/breastcancermasses/Dataset of Mammography with Benign Malignant Breast Masses/Dataset of Mammography with Benign Malignant Breast Masses/DDSM Dataset'
+path_test = '../input/breastcancermasses/Dataset of Mammography with Benign Malignant Breast Masses/Dataset of Mammography with Benign Malignant Breast Masses/DDSM Dataset'
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
