@@ -1,0 +1,118 @@
+"""PSOCNN Algorithm
+Copyright (c) 2023 Future Processing
+
+@author:Aguerchi Khadija, Jabrane Younes, Habba Maryam,
+@email: 
+@date: 
+"""
+
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import layers
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.optimizers import SGD
+from keras.callbacks import EarlyStopping
+
+def evaluate_model2(x, train_data, val_data, test_data):
+"""Evaluate the performance of a CNN model with the given hyperparameters. Returns the accuracy of the model."""
+    
+    ks, s, lr = x[0], x[1], x[2]
+    
+    model = tf.keras.Sequential([
+        layers.Rescaling(1./255, input_shape=(200, 200, 3)),
+        layers.Conv2D(lr, ks, strides=(s, s), padding='same', activation='relu'),
+        layers.MaxPooling2D(),
+        layers.Conv2D(32, ks, padding='same', activation='relu'),
+        layers.MaxPooling2D(),
+        layers.Conv2D(64, 3, padding='same', activation='relu'),
+        layers.MaxPooling2D(),
+        layers.Dropout(0.5),
+        layers.Flatten(),
+        layers.Dense(16, activation="relu"),
+        layers.Dense(2, activation="sigmoid")
+    ])
+    
+    # Early stopping to avoid overfitting
+    early_stop = EarlyStopping(monitor='val_loss', patience=5)
+    
+    model.compile(optimizer='sgd', loss='binary_crossentropy', metrics=['accuracy'])
+    history = model.fit(train_data, epochs=3, validation_data=val_data, callbacks=[early_stop])
+    
+    # Plot accuracy
+    plt.plot(history.history['accuracy'], label='train')
+    plt.plot(history.history['val_accuracy'], label='test')
+    plt.title('Model Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    plt.show()
+    
+    # Plot loss
+    plt.plot(history.history['loss'], label='train')
+    plt.plot(history.history['val_loss'], label='test')
+    plt.title('Model Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
+    
+    # Evaluate and print accuracy on the test data
+    score = model.evaluate(test_data)
+    print('Current config:', x, 'Test accuracy:', score[1])
+    
+    return score[1]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+def initialize_particles(n_particles,n_dims, hyperparameters):
+    data = list(hyperparameters.values())
+    parameter_array = np.array(data)
+# Generate initial particles randomly
+    particles = []
+    for i in range(n_particles):
+        particle = []
+        for j in range(n_dims):
+            particle.append(random.randrange(parameter_array[j][0], parameter_array[j][1]+1,parameter_array[j][2]))
+
+        particles.append(particle)
+    return particles
+
+def update_particle_velocity(current_position, current_velocity, personal_best_position, global_best_position, cognitive_coefficient, social_coefficient, inertia_coefficient):
+    updated_velocity = []
+    for i in range(len(current_position)):
+        r1, r2 = random.randrange(0, 2), random.randrange(0, 2)
+        vel_cognitive = cognitive_coefficient * r1 * (personal_best_position[i] - current_position[i])
+        vel_social = social_coefficient * r2 * (global_best_position[i] - current_position[i])
+        updated_velocity.append(current_velocity[i] + vel_cognitive + vel_social)
+
+    return updated_velocity
+
+def update_particle_position(current_position, current_velocity):
+    updated_position = [current_position[i] + current_velocity[i] for i in range(len(current_position))]
+    return updated_position
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+def run_particle_swarm_optimization(num_particles, num_dimensions, hyperparameter_ranges, cognitive_coefficient, social_coefficient, inertia_coefficient, max_iterations):
+    particle_positions = generate_initial_positions(num_particles, num_dimensions, hyperparameter_ranges)
+    particle_velocities = [[0 for _ in range(num_dimensions)] for _ in range(num_particles)]
+    personal_best_accuracies = [0 for _ in range(num_particles)]
+    personal_best_positions = particle_positions.copy()
+    global_best_position = particle_positions[0].copy()
+    global_best_accuracy = evaluate_model(global_best_position)  # Assuming evaluate_model is defined
+
+    for iteration in range(max_iterations):
+        print("Iteration:", iteration)
+        for i in range(num_particles):
+            accuracy = evaluate_model(particle_positions[i])  # Assuming evaluate_model is defined
+            if accuracy > personal_best_accuracies[i]:
+                personal_best_accuracies[i] = accuracy
+                personal_best_positions[i] = particle_positions[i].copy()
+                if accuracy > global_best_accuracy:
+                    global_best_accuracy = accuracy
+                    global_best_position = particle_positions[i].copy()
+
+        for i in range(num_particles):
+            updated_velocity = update_particle_velocity(particle_positions[i], particle_velocities[i], personal_best_positions[i], global_best_position, cognitive_coefficient, social_coefficient, inertia_coefficient)
+            updated_position = update_particle_position(particle_positions[i], updated_velocity)
+            particle_positions[i] = updated_position
+            particle_velocities[i] = updated_velocity
+
+    return global_best_position, global_best_accuracy
